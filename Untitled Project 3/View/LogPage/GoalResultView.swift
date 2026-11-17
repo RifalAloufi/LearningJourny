@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Shown inside Activity instead of the Log / Freeze buttons
-/// when the goal is completed ("Well done!") or failed (32h without activity).
 struct GoalResultView: View {
     let outcome: GoalOutcome
     var onSetGoal: () -> Void

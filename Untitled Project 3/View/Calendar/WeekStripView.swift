@@ -1,9 +1,4 @@
-//
-//  WeekStrpView.swift
-//  MyApp
-//
-//  Created by Rifal  on 30/05/1448 AH.
-//
+
 import SwiftUI
 
 enum DayCellState {
@@ -21,15 +16,14 @@ struct WeekDay: Identifiable {
 }
 
 extension WeekDay {
-    /// Builds the 7 days (Sunday → Saturday) of the week that contains `date`.
-    /// `states` is keyed by start-of-day date; days not in the dictionary are `.none`.
+
     static func week(
         containing date: Date,
         states: [Date: DayCellState] = [:],
         calendar: Calendar = .current
     ) -> [WeekDay] {
         var cal = calendar
-        cal.firstWeekday = 1 // Sunday, like the design
+        cal.firstWeekday = 1 
 
         guard let start = cal.dateInterval(of: .weekOfYear, for: date)?.start else { return [] }
 

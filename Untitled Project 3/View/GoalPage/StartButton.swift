@@ -1,6 +1,5 @@
 import SwiftUI
 
-// MARK: - Flame icon (orange flame with a dark inner flame, like the design)
 
 struct FlameIcon: View {
     var size: CGFloat = 64
@@ -32,7 +31,6 @@ struct FlameIcon: View {
     }
 }
 
-// MARK: - Start button (glass on iOS 26+, solid capsule fallback)
 
 struct StartButton: View {
     var title: String = "Start Learning"

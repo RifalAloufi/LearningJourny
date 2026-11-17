@@ -1,12 +1,8 @@
 import Foundation
 
 enum StreakCalculator {
-    /// More than 32 hours without a Learned log or a Freeze resets the streak.
     static let resetInterval: TimeInterval = 32 * 60 * 60
 
-    /// - Learned days increase the streak (one per calendar day).
-    /// - Freezed days keep it alive but do not increase it.
-    /// - A gap longer than 32 hours between two logs, or between the last log and `now`, resets it.
     static func streak(logs: [DayLog], now: Date, calendar: Calendar = .current) -> Int {
         let sorted = logs.sorted { $0.loggedAt < $1.loggedAt }
         guard let last = sorted.last else { return 0 }

@@ -1,9 +1,4 @@
 import SwiftUI
-
-/// The big glass circle.
-/// - Normal: "Log as Learned" (orange glass)
-/// - Logged today: "Logged as Learned" (black glass, disabled)
-/// - Freeze is active: "Log as Learned" (black glass, disabled)
 struct LogButton: View {
     let isLogged: Bool
     var isBlocked: Bool = false
@@ -25,7 +20,6 @@ struct LogButton: View {
     }
 }
 
-/// Small press feedback shared by the big buttons.
 struct PressScaleButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label

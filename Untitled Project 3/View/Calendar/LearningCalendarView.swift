@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Calendar page, pushed with navigation from the calendar icon on Activity.
-/// Shows every month from the goal start until now, with Learned / Freezed days.
 struct LearningCalendarView: View {
     let goalStart: Date
     let states: [Date: DayCellState]
@@ -9,12 +7,10 @@ struct LearningCalendarView: View {
 
     private var calendar: Calendar {
         var c = Calendar.current
-        c.firstWeekday = 1 // Sunday, like the rest of the app
+        c.firstWeekday = 1
         return c
     }
 
-    /// Every month: January of the goal's start year through 12 months ahead of today
-    /// (so upcoming months of a new year are included).
     private var months: [Date] {
         let cal = calendar
         guard let first = cal.dateInterval(of: .year, for: min(goalStart, today))?.start,
@@ -69,7 +65,6 @@ struct LearningCalendarView: View {
                         .padding(.bottom, 24)
                     }
                     .onAppear {
-                        // Open on the current month; the other months are one scroll away.
                         DispatchQueue.main.async {
                             proxy.scrollTo(currentMonth, anchor: .top)
                         }
@@ -99,7 +94,6 @@ private struct MonthGridView: View {
         return f.string(from: month)
     }
 
-    /// Leading blanks so the 1st lands on the right weekday, then every day.
     private var days: [Date?] {
         guard let range = calendar.range(of: .day, in: .month, for: month),
               let first = calendar.dateInterval(of: .month, for: month)?.start else { return [] }

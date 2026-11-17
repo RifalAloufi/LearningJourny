@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Shown when 32 hours pass without logging a day as Learned or using a Freeze.
 struct GoalFailedView: View {
     let subject: String
     var onStartAgain: () -> Void

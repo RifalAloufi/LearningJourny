@@ -1,9 +1,7 @@
-//  ActivityView.swift
-//  MyApp
+
 
 import SwiftUI
 
-/// Everything the Activity screen needs to draw itself.
 struct ActivityDisplayState {
     var date: Date
     var week: [WeekDay]
@@ -14,11 +12,9 @@ struct ActivityDisplayState {
     var loggedToday: Bool
     var freezedToday: Bool
     var outcome: GoalOutcome = .active
-    /// A Freeze was pressed in the last 24 hours.
     var freezeActive: Bool = false
 }
 
-// MARK: - The screen's UI (no view model here)
 
 struct ActivityView: View {
     let state: ActivityDisplayState
@@ -156,7 +152,6 @@ struct ActivityScreen: View {
     @State private var showGoalEditor = false
     @State private var showCalendar = false
 
-    /// `onEditGoal` is kept so RootView compiles unchanged; it is no longer used.
     init(goal: Goal, onEditGoal: @escaping () -> Void = {}) {
         _vm = StateObject(wrappedValue: ActivityViewModel(goal: goal))
     }

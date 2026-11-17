@@ -4,12 +4,6 @@ extension Color {
     static let freezeBlue = Color(red: 0.42, green: 0.80, blue: 0.96)
 }
 
-/// Glass Freeze button + "x out of N Freezes used" caption.
-/// - Available: "Freeze for a day" (blue glass)
-/// - Freeze active (pressed in the last 24h): looks like the disabled design
-///   ("Freezed for a day", black glass) but is tappable: `onUndo` asks the user
-///   if they want to undo the Freeze.
-/// - All Freezes used / learned today: black glass, disabled
 struct FreezeButton: View {
     let isFreezeActive: Bool
     let isLoggedToday: Bool
@@ -26,7 +20,6 @@ struct FreezeButton: View {
         return isLoggedToday || noFreezesLeft
     }
 
-    /// Drawn as "off" (black glass, gray text), even when tappable for undo.
     private var looksOff: Bool { isFreezeActive || isDisabled }
 
     private var title: String {

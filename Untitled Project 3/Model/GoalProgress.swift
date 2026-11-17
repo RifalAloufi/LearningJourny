@@ -34,23 +34,11 @@ struct GoalProgress: Equatable {
         return .active
     }
 
-    /// Can't freeze when: the goal is over, a Freeze is already active,
-    /// today is learned, or all Freezes are used.
     var canFreeze: Bool {
         outcome == .active && !freezeActive && !loggedToday && usedFreezes < totalFreezes
     }
 
-    /// Can't log when: the goal is over, today is already logged, or a Freeze is active.
     var canLog: Bool { outcome == .active && !loggedToday && !freezeActive }
-
-    /// Days needed to complete the goal. Change here if your rule is different.
-    static func targetDays(for duration: LearningDuration) -> Int {
-        switch duration {
-        case .week:  return 7
-        case .month: return 30
-        case .year:  return 365
-        }
-    }
 
     static func make(
         goal: Goal,
@@ -66,36 +54,25 @@ struct GoalProgress: Equatable {
             valid.contains { $0.status == status && calendar.startOfDay(for: $0.loggedAt) == today }
         }
 
-        // Last activity, or the goal start if the user never logged anything.
         let reference = valid.map(\.loggedAt).max() ?? goal.createdAt
         let isFailed = now.timeIntervalSince(reference) > StreakCalculator.resetInterval
 
-        let lastFreeze = valid.filter { $0.status == .freezed }.map(\.loggedAt).max()
-        let freezeActive = lastFreeze.map { now.timeIntervalSince($0) < freezeDuration } ?? false
+        let freezes = valid.filter { $0.status == .freezed }
+        let freezeActive = freezes.map(\.loggedAt).max()
+            .map { now.timeIntervalSince($0) < freezeDuration } ?? false
 
         let covered = Set(valid.map { calendar.startOfDay(for: $0.loggedAt) }).count
 
         return GoalProgress(
             streak: StreakCalculator.streak(logs: valid, now: now, calendar: calendar),
-            usedFreezes: valid.filter { $0.status == .freezed }.count,
-            totalFreezes: FreezePolicy.limit(for: goal.duration),
+            usedFreezes: freezes.count,
+            totalFreezes: goal.duration.freezeLimit,
             loggedToday: hasLog(.learned),
             freezedToday: hasLog(.freezed),
             freezeActive: freezeActive,
             isFailed: isFailed,
             coveredDays: covered,
-            targetDays: targetDays(for: goal.duration)
+            targetDays: goal.duration.targetDays
         )
     }
 }
- 
-enum FreezePolicy {
-    static func limit(for duration: LearningDuration) -> Int {
-        switch duration {
-        case .week:  return 2
-        case .month: return 8
-        case .year:  return 96
-        }
-    }
-}
-

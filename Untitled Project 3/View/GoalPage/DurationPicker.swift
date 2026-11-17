@@ -1,10 +1,5 @@
 import SwiftUI
 
-// NOTE: `LearningDuration` is defined in Models/GoalPage/LearningDuration.swift.
-// Do not declare it again in this file.
-
-/// Week / Month / Year chips with the glass effect:
-/// selected = orange glass, others = black glass.
 struct DurationPicker: View {
     @Binding var selection: LearningDuration
 

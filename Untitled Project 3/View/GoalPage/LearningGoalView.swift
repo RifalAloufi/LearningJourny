@@ -1,9 +1,5 @@
 import SwiftUI
 
-/// "Learning Goal" sheet: opened from the pencil icon or "Set a goal".
-/// Editing a running goal asks for confirmation (the streak restarts).
-/// With `isNewGoal` (goal completed or failed) there is nothing to lose,
-/// so it saves directly and allows keeping the same subject and duration.
 struct LearningGoalView: View {
     let currentGoal: Goal
     var isNewGoal: Bool = false
@@ -32,7 +28,6 @@ struct LearningGoalView: View {
         subject.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// ✓ needs 3+ letters, and (for a running goal) a real change.
     private var canSave: Bool {
         trimmed.count >= 3 &&
         (isNewGoal || trimmed != currentGoal.subject || duration != currentGoal.duration)
@@ -61,7 +56,6 @@ struct LearningGoalView: View {
         .animation(.easeInOut(duration: 0.2), value: showConfirm)
     }
 
-    /// "Update goal" popup: black glass Dismiss + orange glass Update.
     private var confirmPopup: some View {
         ZStack {
             Color.black.opacity(0.55)

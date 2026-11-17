@@ -16,7 +16,6 @@ final class ActivityViewModel: ObservableObject {
         static let logs = "activity.logs"
     }
 
-    /// The saved goal, if onboarding was already completed.
     static func storedGoal(defaults: UserDefaults = .standard) -> Goal? {
         guard let data = defaults.data(forKey: Key.goal) else { return nil }
         return try? JSONDecoder().decode(Goal.self, from: data)
@@ -38,16 +37,14 @@ final class ActivityViewModel: ObservableObject {
         observeTimeChanges()
     }
 
-    // MARK: - Derived state
 
     var progress: GoalProgress {
         GoalProgress.make(goal: goal, logs: logs, now: now, calendar: calendar)
     }
 
-    /// Learned / Freezed state per calendar day (Freezed wins over Learned).
     var dayStates: [Date: DayCellState] {
         var states: [Date: DayCellState] = [:]
-        for log in logs {
+        for log in logs where log.loggedAt >= goal.createdAt {   // <- الشرط الجديد
             let day = calendar.startOfDay(for: log.loggedAt)
             if log.status == .freezed {
                 states[day] = .freezed
@@ -57,12 +54,10 @@ final class ActivityViewModel: ObservableObject {
         }
         return states
     }
-    /// Start of the calendar: the oldest logged day or the current goal's start.
+
     var historyStart: Date {
-        guard let oldest = logs.map(\.loggedAt).min() else { return goal.createdAt }
-        return min(oldest, goal.createdAt)
+        goal.createdAt
     }
-    
     var displayState: ActivityDisplayState {
         let p = progress
 
@@ -79,11 +74,6 @@ final class ActivityViewModel: ObservableObject {
             freezeActive: p.freezeActive
         )
     }
-
-    // MARK: - Actions
-    /// A new goal restarts the streak and the Freezes (they only count logs since the goal
-    /// started), but past days stay in the calendar.
-    
     
     func logAsLearned() {
         refresh()
@@ -99,7 +89,6 @@ final class ActivityViewModel: ObservableObject {
         save(logs, forKey: Key.logs)
     }
 
-    /// Undo: removes the active Freeze (only possible within 24h of pressing it).
     func undoFreeze() {
         refresh()
         guard progress.freezeActive,
@@ -108,22 +97,15 @@ final class ActivityViewModel: ObservableObject {
         save(logs, forKey: Key.logs)
     }
 
-    /// Updating the learning goal resets the streak and the Freezes.
-    /// A new goal restarts the streak and the Freezes (they only count logs since the goal
-    /// started), but past days stay in the calendar.
     func updateGoal(subject: String, duration: LearningDuration) {
         refresh()
         goal = Goal(subject: subject, duration: duration, createdAt: now)
         save(goal, forKey: Key.goal)
     }
 
-    /// Re-reads the clock so buttons re-enable at 12AM, Freezes expire after 24h
-    /// and the 32-hour rule is re-checked.
     func refresh() {
         now = Date()
     }
-
-    // MARK: - Private
 
     private func observeTimeChanges() {
         let names: [Notification.Name] = [
@@ -138,7 +120,6 @@ final class ActivityViewModel: ObservableObject {
                 .store(in: &cancellables)
         }
 
-        // While the app is open: catch the 24h Freeze expiry and the 32h rule.
         Timer.publish(every: 30, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in self?.refresh() }

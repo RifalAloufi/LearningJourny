@@ -4,10 +4,8 @@ struct OnboardingView: View {
     @State private var subject: String = ""
     @State private var duration: LearningDuration = .week
 
-    /// Called when the user taps "Start Learning".
     var onStart: (String, LearningDuration) -> Void = { _, _ in }
 
-    /// Start is disabled until the field has at least 3 letters.
     private var isStartEnabled: Bool {
         subject.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
     }
@@ -34,8 +32,6 @@ struct OnboardingView: View {
                 }
                 .padding(.top, 110)
 
-                // Same card as the "Learning Goal" page: glass chips,
-                // gray text until selected, white when selected.
                 GoalFormView(subject: $subject, duration: $duration)
                     .padding(.top, 40)
 
@@ -65,7 +61,6 @@ struct OnboardingView: View {
     }
 }
 
-// MARK: - Start button style (glass)
 
 struct StartButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled

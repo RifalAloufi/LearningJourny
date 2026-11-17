@@ -1,11 +1,9 @@
 import SwiftUI
 
-/// "1 day" / "4 days" — singular when the number is exactly 1.
 func dayCountText(_ count: Int) -> String {
     "\(count) \(count == 1 ? "day" : "days")"
 }
 
-/// Black glass card (Learned / Freezed counters).
 struct StatCardView: View {
     let systemImage: String
     let tint: Color
